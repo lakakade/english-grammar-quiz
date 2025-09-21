@@ -56,429 +56,367 @@
             </svg>
         );
 
-        const GrammarQuizApp = () => {
-            const [currentCategory, setCurrentCategory] = useState(null);
-            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-            const [selectedAnswer, setSelectedAnswer] = useState(null);
-            const [showResult, setShowResult] = useState(false);
-            const [score, setScore] = useState(0);
-            const [quizCompleted, setQuizCompleted] = useState(false);
-            const [answeredQuestions, setAnsweredQuestions] = useState([]);
+const GrammarQuizApp = () => {
+    const [currentCategory, setCurrentCategory] = useState(null);
+    const [currentSubCategory, setCurrentSubCategory] = useState(null);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [selectedAnswer, setSelectedAnswer] = useState(null);
+    const [showResult, setShowResult] = useState(false);
+    const [score, setScore] = useState(0);
+    const [quizCompleted, setQuizCompleted] = useState(false);
+    const [answeredQuestions, setAnsweredQuestions] = useState([]);
 
-            const quizCategories = {
-                tenses: {
-                    name: "Verb Tenses",
-                    icon: "⏰",
+    const quizCategories = {
+        tenses: {
+            name: "Verb Tenses",
+            icon: "⏰",
+            questions: [
+                {
+                    question: "She _____ to the store every morning.",
+                    options: ["go", "goes", "going", "gone"],
+                    correct: 1,
+                    explanation: "Use 'goes' for third person singular in simple present tense."
+                },
+                {
+                    question: "They _____ playing football when it started raining.",
+                    options: ["are", "were", "was", "is"],
+                    correct: 1,
+                    explanation: "Use 'were' for past continuous tense with plural subjects."
+                },
+                {
+                    question: "By next year, I _____ my degree.",
+                    options: ["will complete", "will have completed", "complete", "completed"],
+                    correct: 1,
+                    explanation: "Use future perfect 'will have completed' for actions that will be finished by a specific future time."
+                },
+                {
+                    question: "He _____ his homework before dinner yesterday.",
+                    options: ["finished", "had finished", "finishes", "will finish"],
+                    correct: 1,
+                    explanation: "Use past perfect 'had finished' for an action completed before another past action."
+                },
+                {
+                    question: "We _____ here for three hours.",
+                    options: ["wait", "are waiting", "have been waiting", "waited"],
+                    correct: 2,
+                    explanation: "Use present perfect continuous 'have been waiting' for ongoing actions that started in the past."
+                }
+            ]
+        },
+        articles: {
+            name: "Articles (A, An, The)",
+            icon: "📝",
+            questions: [
+                {
+                    question: "I need _____ umbrella because it's raining.",
+                    options: ["a", "an", "the", "no article"],
+                    correct: 1,
+                    explanation: "Use 'an' before words starting with vowel sounds."
+                },
+                {
+                    question: "_____ sun rises in the east.",
+                    options: ["A", "An", "The", "No article"],
+                    correct: 2,
+                    explanation: "Use 'the' with unique objects like the sun, moon, earth."
+                },
+                {
+                    question: "She is _____ honest person.",
+                    options: ["a", "an", "the", "no article"],
+                    correct: 1,
+                    explanation: "Use 'an' before words starting with vowel sounds (honest starts with 'o' sound)."
+                },
+                {
+                    question: "I love playing _____ piano.",
+                    options: ["a", "an", "the", "no article"],
+                    correct: 2,
+                    explanation: "Use 'the' with musical instruments."
+                },
+                {
+                    question: "_____ books are expensive these days.",
+                    options: ["A", "An", "The", "No article"],
+                    correct: 3,
+                    explanation: "No article is used when making general statements about plural nouns."
+                }
+            ]
+        },
+        prepositions: {
+            name: "Prepositions",
+            icon: "🔗",
+            questions: [
+                {
+                    question: "The cat is hiding _____ the table.",
+                    options: ["in", "on", "under", "at"],
+                    correct: 2,
+                    explanation: "Use 'under' to indicate position below something."
+                },
+                {
+                    question: "We arrived _____ the airport at 6 PM.",
+                    options: ["in", "on", "at", "to"],
+                    correct: 2,
+                    explanation: "Use 'at' with specific locations and buildings."
+                },
+                {
+                    question: "She was born _____ May 15th.",
+                    options: ["in", "on", "at", "during"],
+                    correct: 1,
+                    explanation: "Use 'on' with specific dates."
+                },
+                {
+                    question: "I'll see you _____ the morning.",
+                    options: ["in", "on", "at", "during"],
+                    correct: 0,
+                    explanation: "Use 'in' with parts of the day (morning, afternoon, evening)."
+                },
+                {
+                    question: "The picture is hanging _____ the wall.",
+                    options: ["in", "on", "at", "over"],
+                    correct: 1,
+                    explanation: "Use 'on' when something is attached to or touching a surface."
+                }
+            ]
+        },
+        subjectVerb: {
+            name: "Subject-Verb Agreement",
+            icon: "🤝",
+            questions: [
+                {
+                    question: "The group of students _____ studying hard.",
+                    options: ["is", "are", "was", "were"],
+                    correct: 0,
+                    explanation: "The subject 'group' is singular, so use 'is'."
+                },
+                {
+                    question: "Neither the teacher nor the students _____ satisfied.",
+                    options: ["is", "are", "was", "were"],
+                    correct: 1,
+                    explanation: "With 'neither...nor', the verb agrees with the subject closest to it (students = plural)."
+                },
+                {
+                    question: "Mathematics _____ my favorite subject.",
+                    options: ["is", "are", "was", "were"],
+                    correct: 0,
+                    explanation: "Subject names ending in -s like 'mathematics' are singular."
+                },
+                {
+                    question: "The news _____ very disturbing today.",
+                    options: ["is", "are", "was", "were"],
+                    correct: 0,
+                    explanation: "'News' is always singular despite ending in -s."
+                },
+                {
+                    question: "Each of the boys _____ a bicycle.",
+                    options: ["have", "has", "had", "having"],
+                    correct: 1,
+                    explanation: "'Each' is always singular, so use 'has'."
+                }
+            ]
+        },
+        wordPower: {
+            name: "Word Power Tests",
+            icon: "🔤",
+            hasSubCategories: true,
+            subCategories: {
+                test1: {
+                    name: "Test 1 - Beginner",
+                    icon: "🟢",
                     questions: [
                         {
-                            question: "She _____ to the store every morning.",
-                            options: ["go", "goes", "going", "gone"],
+                            question: "Choose the synonym of 'Happy':",
+                            options: ["Sad", "Joyful", "Angry", "Tired"],
                             correct: 1,
-                            explanation: "Use 'goes' for third person singular in simple present tense."
+                            explanation: "Joyful means feeling great pleasure and happiness."
                         },
                         {
-                            question: "They _____ playing football when it started raining.",
-                            options: ["are", "were", "was", "is"],
+                            question: "What does 'Brave' mean?",
+                            options: ["Scared", "Courageous", "Weak", "Lazy"],
                             correct: 1,
-                            explanation: "Use 'were' for past continuous tense with plural subjects."
+                            explanation: "Brave means showing courage and fearlessness."
                         },
                         {
-                            question: "By next year, I _____ my degree.",
-                            options: ["will complete", "will have completed", "complete", "completed"],
-                            correct: 1,
-                            explanation: "Use future perfect 'will have completed' for actions that will be finished by a specific future time."
-                        },
-                        {
-                            question: "He _____ his homework before dinner yesterday.",
-                            options: ["finished", "had finished", "finishes", "will finish"],
-                            correct: 1,
-                            explanation: "Use past perfect 'had finished' for an action completed before another past action."
-                        },
-                        {
-                            question: "We _____ here for three hours.",
-                            options: ["wait", "are waiting", "have been waiting", "waited"],
+                            question: "Choose the opposite of 'Hot':",
+                            options: ["Warm", "Cool", "Cold", "Boiling"],
                             correct: 2,
-                            explanation: "Use present perfect continuous 'have been waiting' for ongoing actions that started in the past."
+                            explanation: "Cold is the opposite of hot, meaning having a low temperature."
+                        },
+                        {
+                            question: "What does 'Smart' mean?",
+                            options: ["Foolish", "Intelligent", "Slow", "Careless"],
+                            correct: 1,
+                            explanation: "Smart means having intelligence and good judgment."
+                        },
+                        {
+                            question: "Choose the synonym of 'Big':",
+                            options: ["Small", "Tiny", "Large", "Little"],
+                            correct: 2,
+                            explanation: "Large means great in size, similar to big."
+                        },
+                        {
+                            question: "What does 'Clean' mean?",
+                            options: ["Dirty", "Messy", "Pure", "Broken"],
+                            correct: 2,
+                            explanation: "Clean means free from dirt, marks, or stains; pure."
+                        },
+                        {
+                            question: "Choose the opposite of 'Fast':",
+                            options: ["Quick", "Rapid", "Slow", "Swift"],
+                            correct: 2,
+                            explanation: "Slow means moving at a low speed, opposite of fast."
+                        },
+                        {
+                            question: "What does 'Kind' mean?",
+                            options: ["Mean", "Gentle", "Rude", "Harsh"],
+                            correct: 1,
+                            explanation: "Kind means having a friendly, generous nature; gentle."
+                        },
+                        {
+                            question: "Choose the synonym of 'Beautiful':",
+                            options: ["Ugly", "Pretty", "Plain", "Awful"],
+                            correct: 1,
+                            explanation: "Pretty means attractive or beautiful in appearance."
+                        },
+                        {
+                            question: "What does 'Strong' mean?",
+                            options: ["Weak", "Powerful", "Fragile", "Soft"],
+                            correct: 1,
+                            explanation: "Strong means having great physical power and force."
                         }
                     ]
                 },
-                articles: {
-                    name: "Articles (A, An, The)",
-                    icon: "📝",
+                test2: {
+                    name: "Test 2 - Intermediate",
+                    icon: "🟡",
                     questions: [
                         {
-                            question: "I need _____ umbrella because it's raining.",
-                            options: ["a", "an", "the", "no article"],
+                            question: "Choose the synonym of 'Abundant':",
+                            options: ["Scarce", "Plentiful", "Limited", "Insufficient"],
                             correct: 1,
-                            explanation: "Use 'an' before words starting with vowel sounds."
+                            explanation: "Abundant means existing in large quantities; plentiful."
                         },
                         {
-                            question: "_____ sun rises in the east.",
-                            options: ["A", "An", "The", "No article"],
-                            correct: 2,
-                            explanation: "Use 'the' with unique objects like the sun, moon, earth."
-                        },
-                        {
-                            question: "She is _____ honest person.",
-                            options: ["a", "an", "the", "no article"],
+                            question: "What does 'Meticulous' mean?",
+                            options: ["Careless", "Careful", "Rushed", "Sloppy"],
                             correct: 1,
-                            explanation: "Use 'an' before words starting with vowel sounds (honest starts with 'o' sound)."
+                            explanation: "Meticulous means showing great attention to detail; very careful."
                         },
                         {
-                            question: "I love playing _____ piano.",
-                            options: ["a", "an", "the", "no article"],
+                            question: "Choose the opposite of 'Optimistic':",
+                            options: ["Hopeful", "Positive", "Pessimistic", "Cheerful"],
                             correct: 2,
-                            explanation: "Use 'the' with musical instruments."
+                            explanation: "Pessimistic means tending to see the worst aspect of things."
                         },
                         {
-                            question: "_____ books are expensive these days.",
-                            options: ["A", "An", "The", "No article"],
-                            correct: 3,
-                            explanation: "No article is used when making general statements about plural nouns."
+                            question: "What does 'Eloquent' mean?",
+                            options: ["Speechless", "Fluent", "Quiet", "Mumbling"],
+                            correct: 1,
+                            explanation: "Eloquent means fluent and persuasive in speaking or writing."
+                        },
+                        {
+                            question: "Choose the synonym of 'Deteriorate':",
+                            options: ["Improve", "Worsen", "Maintain", "Enhance"],
+                            correct: 1,
+                            explanation: "Deteriorate means to become progressively worse; to worsen."
+                        },
+                        {
+                            question: "What does 'Pragmatic' mean?",
+                            options: ["Idealistic", "Practical", "Theoretical", "Unrealistic"],
+                            correct: 1,
+                            explanation: "Pragmatic means dealing with things in a practical way."
+                        },
+                        {
+                            question: "Choose the opposite of 'Ambiguous':",
+                            options: ["Clear", "Confusing", "Vague", "Uncertain"],
+                            correct: 0,
+                            explanation: "Clear is the opposite of ambiguous, meaning easy to understand."
+                        },
+                        {
+                            question: "What does 'Versatile' mean?",
+                            options: ["Limited", "Adaptable", "Rigid", "Specialized"],
+                            correct: 1,
+                            explanation: "Versatile means able to adapt or be adapted to many functions."
+                        },
+                        {
+                            question: "Choose the synonym of 'Tenacious':",
+                            options: ["Weak", "Persistent", "Giving up", "Lazy"],
+                            correct: 1,
+                            explanation: "Tenacious means tending to keep a firm hold; persistent."
+                        },
+                        {
+                            question: "What does 'Candid' mean?",
+                            options: ["Dishonest", "Honest", "Secretive", "Deceptive"],
+                            correct: 1,
+                            explanation: "Candid means truthful and straightforward; frank and honest."
                         }
                     ]
                 },
-                prepositions: {
-                    name: "Prepositions",
-                    icon: "🔗",
+                test3: {
+                    name: "Test 3 - Advanced",
+                    icon: "🔴",
                     questions: [
                         {
-                            question: "The cat is hiding _____ the table.",
-                            options: ["in", "on", "under", "at"],
-                            correct: 2,
-                            explanation: "Use 'under' to indicate position below something."
-                        },
-                        {
-                            question: "We arrived _____ the airport at 6 PM.",
-                            options: ["in", "on", "at", "to"],
-                            correct: 2,
-                            explanation: "Use 'at' with specific locations and buildings."
-                        },
-                        {
-                            question: "She was born _____ May 15th.",
-                            options: ["in", "on", "at", "during"],
+                            question: "Choose the synonym of 'Ubiquitous':",
+                            options: ["Rare", "Omnipresent", "Absent", "Limited"],
                             correct: 1,
-                            explanation: "Use 'on' with specific dates."
+                            explanation: "Ubiquitous means present, appearing, or found everywhere."
                         },
                         {
-                            question: "I'll see you _____ the morning.",
-                            options: ["in", "on", "at", "during"],
+                            question: "What does 'Perspicacious' mean?",
+                            options: ["Confused", "Insightful", "Ignorant", "Blind"],
+                            correct: 1,
+                            explanation: "Perspicacious means having keen insight; mentally sharp."
+                        },
+                        {
+                            question: "Choose the opposite of 'Magnanimous':",
+                            options: ["Generous", "Noble", "Petty", "Forgiving"],
+                            correct: 2,
+                            explanation: "Petty is opposite to magnanimous, which means generous and noble."
+                        },
+                        {
+                            question: "What does 'Ephemeral' mean?",
+                            options: ["Permanent", "Temporary", "Eternal", "Lasting"],
+                            correct: 1,
+                            explanation: "Ephemeral means lasting for a very short time; temporary."
+                        },
+                        {
+                            question: "Choose the synonym of 'Surreptitious':",
+                            options: ["Open", "Secret", "Public", "Obvious"],
+                            correct: 1,
+                            explanation: "Surreptitious means kept secret, especially because it would not be approved."
+                        },
+                        {
+                            question: "What does 'Vacillate' mean?",
+                            options: ["Decide firmly", "Waver", "Stand still", "Move forward"],
+                            correct: 1,
+                            explanation: "Vacillate means to waver between different opinions or actions."
+                        },
+                        {
+                            question: "Choose the opposite of 'Truculent':",
+                            options: ["Peaceful", "Aggressive", "Hostile", "Defiant"],
                             correct: 0,
-                            explanation: "Use 'in' with parts of the day (morning, afternoon, evening)."
+                            explanation: "Peaceful is opposite to truculent, which means aggressively defiant."
                         },
                         {
-                            question: "The picture is hanging _____ the wall.",
-                            options: ["in", "on", "at", "over"],
+                            question: "What does 'Sagacious' mean?",
+                            options: ["Foolish", "Wise", "Ignorant", "Confused"],
                             correct: 1,
-                            explanation: "Use 'on' when something is attached to or touching a surface."
+                            explanation: "Sagacious means having or showing keen mental discernment; wise."
+                        },
+                        {
+                            question: "Choose the synonym of 'Pusillanimous':",
+                            options: ["Brave", "Cowardly", "Bold", "Fearless"],
+                            correct: 1,
+                            explanation: "Pusillanimous means showing a lack of courage; cowardly."
+                        },
+                        {
+                            question: "What does 'Quixotic' mean?",
+                            options: ["Realistic", "Idealistic", "Practical", "Sensible"],
+                            correct: 1,
+                            explanation: "Quixotic means extremely idealistic and unrealistic."
                         }
                     ]
-                },
-                subjectVerb: {
-                    name: "Subject-Verb Agreement",
-                    icon: "🤝",
-                    questions: [
-                        {
-                            question: "The group of students _____ studying hard.",
-                            options: ["is", "are", "was", "were"],
-                            correct: 0,
-                            explanation: "The subject 'group' is singular, so use 'is'."
-                        },
-                        {
-                            question: "Neither the teacher nor the students _____ satisfied.",
-                            options: ["is", "are", "was", "were"],
-                            correct: 1,
-                            explanation: "With 'neither...nor', the verb agrees with the subject closest to it (students = plural)."
-                        },
-                        {
-                            question: "Mathematics _____ my favorite subject.",
-                            options: ["is", "are", "was", "were"],
-                            correct: 0,
-                            explanation: "Subject names ending in -s like 'mathematics' are singular."
-                        },
-                        {
-                            question: "The news _____ very disturbing today.",
-                            options: ["is", "are", "was", "were"],
-                            correct: 0,
-                            explanation: "'News' is always singular despite ending in -s."
-                        },
-                        {
-                            question: "Each of the boys _____ a bicycle.",
-                            options: ["have", "has", "had", "having"],
-                            correct: 1,
-                            explanation: "'Each' is always singular, so use 'has'."
-                        }
-                    ]
-                },
-                oneWordSubstitution: {
-    name: "One Word Substitution",
-    icon: "🔤",
-    questions: [
-        {
-            question: "A person who loves books and reading:",
-            options: ["Bibliophile", "Bibliographer", "Biography", "Library"],
-            correct: 0,
-            explanation: "A bibliophile is someone who loves and collects books."
-        },
-        {
-            question: "The study of birds:",
-            options: ["Ornithology", "Entomology", "Zoology", "Biology"],
-            correct: 0,
-            explanation: "Ornithology is the scientific study of birds."
-        },
-        {
-            question: "A person who hates mankind:",
-            options: ["Philanthropist", "Misanthrope", "Optimist", "Pessimist"],
-            correct: 1,
-            explanation: "A misanthrope is someone who dislikes humankind and avoids human society."
-        },
-        {
-            question: "The killing of one's own father:",
-            options: ["Matricide", "Suicide", "Patricide", "Homicide"],
-            correct: 2,
-            explanation: "Patricide is the act of killing one's father."
-        },
-        {
-            question: "A government by the people:",
-            options: ["Autocracy", "Democracy", "Monarchy", "Oligarchy"],
-            correct: 1,
-            explanation: "Democracy is a system of government where citizens exercise power by voting."
-        },
-        {
-            question: "Fear of heights:",
-            options: ["Claustrophobia", "Arachnophobia", "Acrophobia", "Agoraphobia"],
-            correct: 2,
-            explanation: "Acrophobia is an extreme or irrational fear of heights."
-        },
-        {
-            question: "A person who can speak two languages:",
-            options: ["Monolingual", "Bilingual", "Multilingual", "Polyglot"],
-            correct: 1,
-            explanation: "A bilingual person can speak two languages fluently."
-        },
-        {
-            question: "The scientific study of earthquakes:",
-            options: ["Geology", "Seismology", "Geography", "Meteorology"],
-            correct: 1,
-            explanation: "Seismology is the scientific study of earthquakes and seismic waves."
-        },
-        {
-            question: "A place where bees are kept:",
-            options: ["Aviary", "Apiary", "Aquarium", "Terrarium"],
-            correct: 1,
-            explanation: "An apiary is a location where beehives are kept."
-        },
-        {
-            question: "The practice of eating human flesh:",
-            options: ["Vegetarianism", "Cannibalism", "Carnivorous", "Omnivorous"],
-            correct: 1,
-            explanation: "Cannibalism is the practice of humans eating the flesh of other humans."
+                }
+            }
         }
-    ]
-},
-                // Add this after your last existing category:
-
-wordPower: {
-    name: "Word Power Tests (300 Questions)",
-    icon: "🔤",
-    questions: [
-        
-        // ==================== TEST 1 - BEGINNER ====================
-        // Questions 1-10: Basic Synonyms & Antonyms
-        {
-            question: "Test 1, Q1: Choose the synonym of 'Happy':",
-            options: ["Sad", "Joyful", "Angry", "Tired"],
-            correct: 1,
-            explanation: "Joyful means feeling great pleasure and happiness. (Beginner Test 1)"
-        },
-        {
-            question: "Test 1, Q2: What does 'Brave' mean?",
-            options: ["Scared", "Courageous", "Weak", "Lazy"],
-            correct: 1,
-            explanation: "Brave means showing courage and fearlessness. (Beginner Test 1)"
-        },
-        {
-            question: "Test 1, Q3: Choose the opposite of 'Hot':",
-            options: ["Warm", "Cool", "Cold", "Boiling"],
-            correct: 2,
-            explanation: "Cold is the opposite of hot. (Beginner Test 1)"
-        },
-        {
-            question: "Test 1, Q4: What does 'Smart' mean?",
-            options: ["Foolish", "Intelligent", "Slow", "Careless"],
-            correct: 1,
-            explanation: "Smart means having intelligence. (Beginner Test 1)"
-        },
-        {
-            question: "Test 1, Q5: Choose the synonym of 'Big':",
-            options: ["Small", "Tiny", "Large", "Little"],
-            correct: 2,
-            explanation: "Large means great in size, similar to big. (Beginner Test 1)"
-        },
-        {
-            question: "Test 1, Q6: What does 'Clean' mean?",
-            options: ["Dirty", "Messy", "Pure", "Broken"],
-            correct: 2,
-            explanation: "Clean means free from dirt; pure. (Beginner Test 1)"
-        },
-        {
-            question: "Test 1, Q7: Choose the opposite of 'Fast':",
-            options: ["Quick", "Rapid", "Slow", "Swift"],
-            correct: 2,
-            explanation: "Slow is the opposite of fast. (Beginner Test 1)"
-        },
-        {
-            question: "Test 1, Q8: What does 'Kind' mean?",
-            options: ["Mean", "Gentle", "Rude", "Harsh"],
-            correct: 1,
-            explanation: "Kind means gentle and caring. (Beginner Test 1)"
-        },
-        {
-            question: "Test 1, Q9: Choose the synonym of 'Beautiful':",
-            options: ["Ugly", "Pretty", "Plain", "Awful"],
-            correct: 1,
-            explanation: "Pretty means attractive or beautiful. (Beginner Test 1)"
-        },
-        {
-            question: "Test 1, Q10: What does 'Strong' mean?",
-            options: ["Weak", "Powerful", "Fragile", "Soft"],
-            correct: 1,
-            explanation: "Strong means having great power. (Beginner Test 1)"
-        },
-
-        // ==================== TEST 2 - BEGINNER ====================
-        // Questions 11-20: Common Words & Meanings
-        {
-            question: "Test 2, Q1: Choose the synonym of 'Funny':",
-            options: ["Serious", "Amusing", "Boring", "Sad"],
-            correct: 1,
-            explanation: "Amusing means causing laughter; funny. (Beginner Test 2)"
-        },
-        {
-            question: "Test 2, Q2: What does 'Quiet' mean?",
-            options: ["Loud", "Silent", "Noisy", "Screaming"],
-            correct: 1,
-            explanation: "Quiet means making little or no noise; silent. (Beginner Test 2)"
-        },
-        {
-            question: "Test 2, Q3: Choose the opposite of 'Rich':",
-            options: ["Wealthy", "Poor", "Expensive", "Valuable"],
-            correct: 1,
-            explanation: "Poor is the opposite of rich. (Beginner Test 2)"
-        },
-        {
-            question: "Test 2, Q4: What does 'Honest' mean?",
-            options: ["Lying", "Truthful", "Fake", "Cheating"],
-            correct: 1,
-            explanation: "Honest means truthful and sincere. (Beginner Test 2)"
-        },
-        {
-            question: "Test 2, Q5: Choose the synonym of 'Old':",
-            options: ["New", "Young", "Ancient", "Fresh"],
-            correct: 2,
-            explanation: "Ancient means very old. (Beginner Test 2)"
-        },
-        {
-            question: "Test 2, Q6: What does 'Polite' mean?",
-            options: ["Rude", "Courteous", "Mean", "Harsh"],
-            correct: 1,
-            explanation: "Polite means having good manners; courteous. (Beginner Test 2)"
-        },
-        {
-            question: "Test 2, Q7: Choose the opposite of 'Light':",
-            options: ["Bright", "Heavy", "White", "Shiny"],
-            correct: 1,
-            explanation: "Heavy is the opposite of light (weight). (Beginner Test 2)"
-        },
-        {
-            question: "Test 2, Q8: What does 'Busy' mean?",
-            options: ["Free", "Active", "Lazy", "Sleeping"],
-            correct: 1,
-            explanation: "Busy means having a lot to do; active. (Beginner Test 2)"
-        },
-        {
-            question: "Test 2, Q9: Choose the synonym of 'Difficult':",
-            options: ["Easy", "Hard", "Simple", "Clear"],
-            correct: 1,
-            explanation: "Hard means not easy; difficult. (Beginner Test 2)"
-        },
-        {
-            question: "Test 2, Q10: What does 'Famous' mean?",
-            options: ["Unknown", "Well-known", "Hidden", "Secret"],
-            correct: 1,
-            explanation: "Famous means well-known by many people. (Beginner Test 2)"
-        },
-
-        // ==================== TEST 11 - INTERMEDIATE ====================
-        // Questions 101-110: Advanced Vocabulary
-        {
-            question: "Test 11, Q1: Choose the synonym of 'Abundant':",
-            options: ["Scarce", "Plentiful", "Limited", "Insufficient"],
-            correct: 1,
-            explanation: "Abundant means existing in large quantities; plentiful. (Intermediate Test 11)"
-        },
-        {
-            question: "Test 11, Q2: What does 'Meticulous' mean?",
-            options: ["Careless", "Careful", "Rushed", "Sloppy"],
-            correct: 1,
-            explanation: "Meticulous means very careful and precise. (Intermediate Test 11)"
-        },
-        {
-            question: "Test 11, Q3: Choose the opposite of 'Optimistic':",
-            options: ["Hopeful", "Positive", "Pessimistic", "Cheerful"],
-            correct: 2,
-            explanation: "Pessimistic is the opposite of optimistic. (Intermediate Test 11)"
-        },
-        {
-            question: "Test 11, Q4: What does 'Eloquent' mean?",
-            options: ["Speechless", "Fluent", "Quiet", "Mumbling"],
-            correct: 1,
-            explanation: "Eloquent means fluent and persuasive in speaking. (Intermediate Test 11)"
-        },
-        {
-            question: "Test 11, Q5: Choose the synonym of 'Deteriorate':",
-            options: ["Improve", "Worsen", "Maintain", "Enhance"],
-            correct: 1,
-            explanation: "Deteriorate means to become worse. (Intermediate Test 11)"
-        },
-        {
-            question: "Test 11, Q6: What does 'Pragmatic' mean?",
-            options: ["Idealistic", "Practical", "Theoretical", "Unrealistic"],
-            correct: 1,
-            explanation: "Pragmatic means practical and realistic. (Intermediate Test 11)"
-        },
-        {
-            question: "Test 11, Q7: Choose the opposite of 'Ambiguous':",
-            options: ["Clear", "Confusing", "Vague", "Uncertain"],
-            correct: 0,
-            explanation: "Clear is the opposite of ambiguous. (Intermediate Test 11)"
-        },
-        {
-            question: "Test 11, Q8: What does 'Versatile' mean?",
-            options: ["Limited", "Adaptable", "Rigid", "Specialized"],
-            correct: 1,
-            explanation: "Versatile means adaptable to many functions. (Intermediate Test 11)"
-        },
-        {
-            question: "Test 11, Q9: Choose the synonym of 'Tenacious':",
-            options: ["Weak", "Persistent", "Giving up", "Lazy"],
-            correct: 1,
-            explanation: "Tenacious means persistent and determined. (Intermediate Test 11)"
-        },
-        {
-            question: "Test 11, Q10: What does 'Candid' mean?",
-            options: ["Dishonest", "Honest", "Secretive", "Deceptive"],
-            correct: 1,
-            explanation: "Candid means honest and straightforward. (Intermediate Test 11)"
-        }
-
-        // ========== CONTINUE THIS PATTERN FOR ALL 30 TESTS ==========
-        // You would add 27 more tests following this same structure
-        // Each test should have 10 questions with clear numbering
-        
-    ]
-}
-            };
+    };
 
             const currentQuestions = currentCategory ? quizCategories[currentCategory].questions : [];
             const currentQuestion = currentQuestions[currentQuestionIndex];
