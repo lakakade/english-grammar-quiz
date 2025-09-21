@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Grammar Quiz</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        
+        // Lucide Icons as React components
+        const CheckCircle = () => (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="9,11 12,14 22,4"></polyline>
+            </svg>
+        );
+        
+        const XCircle = () => (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+            </svg>
+        );
+        
+        const RotateCcw = () => (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="1,4 1,10 7,10"></polyline>
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+        );
+        
+        const Trophy = () => (
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                <path d="M4 22h16"></path>
+                <path d="M10 14.66V17c0 .55.47.98.97 1.21C12.04 18.75 13 20.24 13 22"></path>
+                <path d="M14 14.66V17c0 .55-.47.98-.97 1.21C11.96 18.75 11 20.24 11 22"></path>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+            </svg>
+        );
+        
+        const BookOpen = () => (
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+        );
+
+        const GrammarQuizApp = () => {
+            const [currentCategory, setCurrentCategory] = useState(null);
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [showResult, setShowResult] = useState(false);
+            const [score, setScore] = useState(0);
+            const [quizCompleted, setQuizCompleted] = useState(false);
+            const [answeredQuestions, setAnsweredQuestions] = useState([]);
+
+            const quizCategories = {
+                tenses: {
+                    name: "Verb Tenses",
+                    icon: "⏰",
+                    questions: [
+                        {
+                            question: "She _____ to the store every morning.",
+                            options: ["go", "goes", "going", "gone"],
+                            correct: 1,
+                            explanation: "Use 'goes' for third person singular in simple present tense."
+                        },
+                        {
+                            question: "They _____ playing football when it started raining.",
+                            options: ["are", "were", "was", "is"],
+                            correct: 1,
+                            explanation: "Use 'were' for past continuous tense with plural subjects."
+                        },
+                        {
+                            question: "By next year, I _____ my degree.",
+                            options: ["will complete", "will have completed", "complete", "completed"],
+                            correct: 1,
+                            explanation: "Use future perfect 'will have completed' for actions that will be finished by a specific future time."
+                        },
+                        {
+                            question: "He _____ his homework before dinner yesterday.",
+                            options: ["finished", "had finished", "finishes", "will finish"],
+                            correct: 1,
+                            explanation: "Use past perfect 'had finished' for an action completed before another past action."
+                        },
+                        {
+                            question: "We _____ here for three hours.",
+                            options: ["wait", "are waiting", "have been waiting", "waited"],
+                            correct: 2,
+                            explanation: "Use present perfect continuous 'have been waiting' for ongoing actions that started in the past."
+                        }
+                    ]
+                },
+                articles: {
+                    name: "Articles (A, An, The)",
+                    icon: "📝",
+                    questions: [
+                        {
+                            question: "I need _____ umbrella because it's raining.",
+                            options: ["a", "an", "the", "no article"],
+                            correct: 1,
+                            explanation: "Use 'an' before words starting with vowel sounds."
+                        },
+                        {
+                            question: "_____ sun rises in the east.",
+                            options: ["A", "An", "The", "No article"],
+                            correct: 2,
+                            explanation: "Use 'the' with unique objects like the sun, moon, earth."
+                        },
+                        {
+                            question: "She is _____ honest person.",
+                            options: ["a", "an", "the", "no article"],
+                            correct: 1,
+                            explanation: "Use 'an' before words starting with vowel sounds (honest starts with 'o' sound)."
+                        },
+                        {
+                            question: "I love playing _____ piano.",
+                            options: ["a", "an", "the", "no article"],
+                            correct: 2,
+                            explanation: "Use 'the' with musical instruments."
+                        },
+                        {
+                            question: "_____ books are expensive these days.",
+                            options: ["A", "An", "The", "No article"],
+                            correct: 3,
+                            explanation: "No article is used when making general statements about plural nouns."
+                        }
+                    ]
+                },
+                prepositions: {
+                    name: "Prepositions",
+                    icon: "🔗",
+                    questions: [
+                        {
+                            question: "The cat is hiding _____ the table.",
+                            options: ["in", "on", "under", "at"],
+                            correct: 2,
+                            explanation: "Use 'under' to indicate position below something."
+                        },
+                        {
+                            question: "We arrived _____ the airport at 6 PM.",
+                            options: ["in", "on", "at", "to"],
+                            correct: 2,
+                            explanation: "Use 'at' with specific locations and buildings."
+                        },
+                        {
+                            question: "She was born _____ May 15th.",
+                            options: ["in", "on", "at", "during"],
+                            correct: 1,
+                            explanation: "Use 'on' with specific dates."
+                        },
+                        {
+                            question: "I'll see you _____ the morning.",
+                            options: ["in", "on", "at", "during"],
+                            correct: 0,
+                            explanation: "Use 'in' with parts of the day (morning, afternoon, evening)."
+                        },
+                        {
+                            question: "The picture is hanging _____ the wall.",
+                            options: ["in", "on", "at", "over"],
+                            correct: 1,
+                            explanation: "Use 'on' when something is attached to or touching a surface."
+                        }
+                    ]
+                },
+                subjectVerb: {
+                    name: "Subject-Verb Agreement",
+                    icon: "🤝",
+                    questions: [
+                        {
+                            question: "The group of students _____ studying hard.",
+                            options: ["is", "are", "was", "were"],
+                            correct: 0,
+                            explanation: "The subject 'group' is singular, so use 'is'."
+                        },
+                        {
+                            question: "Neither the teacher nor the students _____ satisfied.",
+                            options: ["is", "are", "was", "were"],
+                            correct: 1,
+                            explanation: "With 'neither...nor', the verb agrees with the subject closest to it (students = plural)."
+                        },
+                        {
+                            question: "Mathematics _____ my favorite subject.",
+                            options: ["is", "are", "was", "were"],
+                            correct: 0,
+                            explanation: "Subject names ending in -s like 'mathematics' are singular."
+                        },
+                        {
+                            question: "The news _____ very disturbing today.",
+                            options: ["is", "are", "was", "were"],
+                            correct: 0,
+                            explanation: "'News' is always singular despite ending in -s."
+                        },
+                        {
+                            question: "Each of the boys _____ a bicycle.",
+                            options: ["have", "has", "had", "having"],
+                            correct: 1,
+                            explanation: "'Each' is always singular, so use 'has'."
+                        }
+                    ]
+                }
+            };
+
+            const currentQuestions = currentCategory ? quizCategories[currentCategory].questions : [];
+            const currentQuestion = currentQuestions[currentQuestionIndex];
+
+            const handleCategorySelect = (categoryKey) => {
+                setCurrentCategory(categoryKey);
+                setCurrentQuestionIndex(0);
+                setSelectedAnswer(null);
+                setShowResult(false);
+                setScore(0);
+                setQuizCompleted(false);
+                setAnsweredQuestions([]);
+            };
+
+            const handleAnswerSelect = (answerIndex) => {
+                if (showResult) return;
+                setSelectedAnswer(answerIndex);
+                setShowResult(true);
+                
+                const isCorrect = answerIndex === currentQuestion.correct;
+                if (isCorrect) {
+                    setScore(score + 1);
+                }
+                
+                setAnsweredQuestions([...answeredQuestions, {
+                    question: currentQuestion.question,
+                    selectedAnswer: answerIndex,
+                    correctAnswer: currentQuestion.correct,
+                    isCorrect: isCorrect,
+                    explanation: currentQuestion.explanation
+                }]);
+            };
+
+            const handleNextQuestion = () => {
+                if (currentQuestionIndex < currentQuestions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedAnswer(null);
+                    setShowResult(false);
+                } else {
+                    setQuizCompleted(true);
+                }
+            };
+
+            const resetQuiz = () => {
+                setCurrentCategory(null);
+                setCurrentQuestionIndex(0);
+                setSelectedAnswer(null);
+                setShowResult(false);
+                setScore(0);
+                setQuizCompleted(false);
+                setAnsweredQuestions([]);
+            };
+
+            const getScoreColor = (score, total) => {
+                const percentage = (score / total) * 100;
+                if (percentage >= 80) return 'text-green-600';
+                if (percentage >= 60) return 'text-yellow-600';
+                return 'text-red-600';
+            };
+
+            if (!currentCategory) {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+                        <div className="max-w-4xl mx-auto">
+                            <div className="text-center mb-8">
+                                <h1 className="text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center gap-3">
+                                    <BookOpen />
+                                    English Grammar Quiz
+                                </h1>
+                                <p className="text-lg text-gray-600">Choose a category to test your grammar knowledge!</p>
+                            </div>
+                            
+                            <div className="grid md:grid-cols-2 gap-6">
+                                {Object.entries(quizCategories).map(([key, category]) => (
+                                    <div
+                                        key={key}
+                                        onClick={() => handleCategorySelect(key)}
+                                        className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 p-8 border-2 border-transparent hover:border-blue-200"
+                                    >
+                                        <div className="text-center">
+                                            <div className="text-4xl mb-4">{category.icon}</div>
+                                            <h3 className="text-xl font-semibold text-gray-800 mb-2">{category.name}</h3>
+                                            <p className="text-gray-600">{category.questions.length} questions</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (quizCompleted) {
+                const percentage = Math.round((score / currentQuestions.length) * 100);
+                
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+                        <div className="max-w-3xl mx-auto">
+                            <div className="bg-white rounded-xl shadow-lg p-8">
+                                <div className="text-center mb-8">
+                                    <Trophy className="mx-auto text-yellow-500 mb-4" />
+                                    <h2 className="text-3xl font-bold text-gray-800 mb-2">Quiz Completed!</h2>
+                                    <div className={`text-5xl font-bold mb-4 ${getScoreColor(score, currentQuestions.length)}`}>
+                                        {score}/{currentQuestions.length}
+                                    </div>
+                                    <p className="text-xl text-gray-600">You scored {percentage}%</p>
+                                </div>
+
+                                <div className="mb-8">
+                                    <h3 className="text-xl font-semibold mb-4 text-gray-800">Review Your Answers:</h3>
+                                    <div className="space-y-4">
+                                        {answeredQuestions.map((answer, index) => (
+                                            <div key={index} className="border rounded-lg p-4 bg-gray-50">
+                                                <div className="flex items-start gap-3 mb-2">
+                                                    {answer.isCorrect ? (
+                                                        <CheckCircle className="text-green-500 flex-shrink-0 mt-0.5" />
+                                                    ) : (
+                                                        <XCircle className="text-red-500 flex-shrink-0 mt-0.5" />
+                                                    )}
+                                                    <div className="flex-1">
+                                                        <p className="font-medium text-gray-800 mb-1">Q{index + 1}: {answer.question}</p>
+                                                        <p className="text-sm text-gray-600">{answer.explanation}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4 justify-center">
+                                    <button
+                                        onClick={() => handleCategorySelect(currentCategory)}
+                                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                                    >
+                                        <RotateCcw />
+                                        Retry Quiz
+                                    </button>
+                                    <button
+                                        onClick={resetQuiz}
+                                        className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                                    >
+                                        Choose Another Category
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+                    <div className="max-w-3xl mx-auto">
+                        <div className="mb-6 flex justify-between items-center">
+                            <h2 className="text-2xl font-bold text-gray-800">
+                                {quizCategories[currentCategory].name}
+                            </h2>
+                            <div className="text-lg font-semibold text-gray-600">
+                                Question {currentQuestionIndex + 1} of {currentQuestions.length}
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+                            <div className="mb-6">
+                                <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                                    <div 
+                                        className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                        style={{ width: `${((currentQuestionIndex + 1) / currentQuestions.length) * 100}%` }}
+                                    ></div>
+                                </div>
+                                <h3 className="text-xl font-semibold text-gray-800 mb-6">
+                                    {currentQuestion.question}
+                                </h3>
+                            </div>
+
+                            <div className="space-y-3 mb-6">
+                                {currentQuestion.options.map((option, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => handleAnswerSelect(index)}
+                                        disabled={showResult}
+                                        className={`w-full p-4 text-left rounded-lg border-2 transition-all duration-300 ${
+                                            showResult
+                                                ? index === currentQuestion.correct
+                                                    ? 'border-green-500 bg-green-50 text-green-800'
+                                                    : selectedAnswer === index
+                                                    ? 'border-red-500 bg-red-50 text-red-800'
+                                                    : 'border-gray-200 bg-gray-50'
+                                                : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
+                                        }`}
+                                    >
+                                        <span className="font-medium">
+                                            {String.fromCharCode(65 + index)}. {option}
+                                        </span>
+                                        {showResult && index === currentQuestion.correct && (
+                                            <CheckCircle className="inline ml-2 text-green-500" />
+                                        )}
+                                        {showResult && selectedAnswer === index && index !== currentQuestion.correct && (
+                                            <XCircle className="inline ml-2 text-red-500" />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {showResult && (
+                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                                    <p className="text-blue-800">
+                                        <strong>Explanation:</strong> {currentQuestion.explanation}
+                                    </p>
+                                </div>
+                            )}
+
+                            <div className="flex justify-between items-center">
+                                <button
+                                    onClick={resetQuiz}
+                                    className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                                >
+                                    ← Back to Categories
+                                </button>
+                                
+                                {showResult && (
+                                    <button
+                                        onClick={handleNextQuestion}
+                                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                    >
+                                        {currentQuestionIndex < currentQuestions.length - 1 ? 'Next Question' : 'View Results'}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="text-center">
+                            <div className="text-lg font-semibold text-gray-700">
+                                Score: {score}/{currentQuestions.length}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<GrammarQuizApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
