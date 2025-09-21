@@ -56,520 +56,709 @@
             </svg>
         );
 
-const GrammarQuizApp = () => {
-    const [currentCategory, setCurrentCategory] = useState(null);
-    const [currentSubCategory, setCurrentSubCategory] = useState(null);
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [selectedAnswer, setSelectedAnswer] = useState(null);
-    const [showResult, setShowResult] = useState(false);
-    const [score, setScore] = useState(0);
-    const [quizCompleted, setQuizCompleted] = useState(false);
-    const [answeredQuestions, setAnsweredQuestions] = useState([]);
+        const GrammarQuizApp = () => {
+            const [currentCategory, setCurrentCategory] = useState(null);
+            const [currentSubCategory, setCurrentSubCategory] = useState(null);
+            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [showResult, setShowResult] = useState(false);
+            const [score, setScore] = useState(0);
+            const [quizCompleted, setQuizCompleted] = useState(false);
+            const [answeredQuestions, setAnsweredQuestions] = useState([]);
 
-    const quizCategories = {
-        tenses: {
-            name: "Verb Tenses",
-            icon: "⏰",
-            questions: [
-                {
-                    question: "She _____ to the store every morning.",
-                    options: ["go", "goes", "going", "gone"],
-                    correct: 1,
-                    explanation: "Use 'goes' for third person singular in simple present tense."
-                },
-                {
-                    question: "They _____ playing football when it started raining.",
-                    options: ["are", "were", "was", "is"],
-                    correct: 1,
-                    explanation: "Use 'were' for past continuous tense with plural subjects."
-                },
-                {
-                    question: "By next year, I _____ my degree.",
-                    options: ["will complete", "will have completed", "complete", "completed"],
-                    correct: 1,
-                    explanation: "Use future perfect 'will have completed' for actions that will be finished by a specific future time."
-                },
-                {
-                    question: "He _____ his homework before dinner yesterday.",
-                    options: ["finished", "had finished", "finishes", "will finish"],
-                    correct: 1,
-                    explanation: "Use past perfect 'had finished' for an action completed before another past action."
-                },
-                {
-                    question: "We _____ here for three hours.",
-                    options: ["wait", "are waiting", "have been waiting", "waited"],
-                    correct: 2,
-                    explanation: "Use present perfect continuous 'have been waiting' for ongoing actions that started in the past."
-                }
-            ]
-        },
-        articles: {
-            name: "Articles (A, An, The)",
-            icon: "📝",
-            questions: [
-                {
-                    question: "I need _____ umbrella because it's raining.",
-                    options: ["a", "an", "the", "no article"],
-                    correct: 1,
-                    explanation: "Use 'an' before words starting with vowel sounds."
-                },
-                {
-                    question: "_____ sun rises in the east.",
-                    options: ["A", "An", "The", "No article"],
-                    correct: 2,
-                    explanation: "Use 'the' with unique objects like the sun, moon, earth."
-                },
-                {
-                    question: "She is _____ honest person.",
-                    options: ["a", "an", "the", "no article"],
-                    correct: 1,
-                    explanation: "Use 'an' before words starting with vowel sounds (honest starts with 'o' sound)."
-                },
-                {
-                    question: "I love playing _____ piano.",
-                    options: ["a", "an", "the", "no article"],
-                    correct: 2,
-                    explanation: "Use 'the' with musical instruments."
-                },
-                {
-                    question: "_____ books are expensive these days.",
-                    options: ["A", "An", "The", "No article"],
-                    correct: 3,
-                    explanation: "No article is used when making general statements about plural nouns."
-                }
-            ]
-        },
-        prepositions: {
-            name: "Prepositions",
-            icon: "🔗",
-            questions: [
-                {
-                    question: "The cat is hiding _____ the table.",
-                    options: ["in", "on", "under", "at"],
-                    correct: 2,
-                    explanation: "Use 'under' to indicate position below something."
-                },
-                {
-                    question: "We arrived _____ the airport at 6 PM.",
-                    options: ["in", "on", "at", "to"],
-                    correct: 2,
-                    explanation: "Use 'at' with specific locations and buildings."
-                },
-                {
-                    question: "She was born _____ May 15th.",
-                    options: ["in", "on", "at", "during"],
-                    correct: 1,
-                    explanation: "Use 'on' with specific dates."
-                },
-                {
-                    question: "I'll see you _____ the morning.",
-                    options: ["in", "on", "at", "during"],
-                    correct: 0,
-                    explanation: "Use 'in' with parts of the day (morning, afternoon, evening)."
-                },
-                {
-                    question: "The picture is hanging _____ the wall.",
-                    options: ["in", "on", "at", "over"],
-                    correct: 1,
-                    explanation: "Use 'on' when something is attached to or touching a surface."
-                }
-            ]
-        },
-        subjectVerb: {
-            name: "Subject-Verb Agreement",
-            icon: "🤝",
-            questions: [
-                {
-                    question: "The group of students _____ studying hard.",
-                    options: ["is", "are", "was", "were"],
-                    correct: 0,
-                    explanation: "The subject 'group' is singular, so use 'is'."
-                },
-                {
-                    question: "Neither the teacher nor the students _____ satisfied.",
-                    options: ["is", "are", "was", "were"],
-                    correct: 1,
-                    explanation: "With 'neither...nor', the verb agrees with the subject closest to it (students = plural)."
-                },
-                {
-                    question: "Mathematics _____ my favorite subject.",
-                    options: ["is", "are", "was", "were"],
-                    correct: 0,
-                    explanation: "Subject names ending in -s like 'mathematics' are singular."
-                },
-                {
-                    question: "The news _____ very disturbing today.",
-                    options: ["is", "are", "was", "were"],
-                    correct: 0,
-                    explanation: "'News' is always singular despite ending in -s."
-                },
-                {
-                    question: "Each of the boys _____ a bicycle.",
-                    options: ["have", "has", "had", "having"],
-                    correct: 1,
-                    explanation: "'Each' is always singular, so use 'has'."
-                }
-            ]
-        },
-        wordPower: {
-            name: "Word Power Tests",
-            icon: "🔤",
-            hasSubCategories: true,
-            subCategories: {
-                test1: {
-                    name: "Test 1 - Beginner",
-                    icon: "🟢",
+            const quizCategories = {
+                tenses: {
+                    name: "Verb Tenses",
+                    icon: "⏰",
                     questions: [
                         {
-                            question: "Choose the synonym of 'Happy':",
-                            options: ["Sad", "Joyful", "Angry", "Tired"],
+                            question: "She _____ to the store every morning.",
+                            options: ["go", "goes", "going", "gone"],
                             correct: 1,
-                            explanation: "Joyful means feeling great pleasure and happiness."
+                            explanation: "Use 'goes' for third person singular in simple present tense."
                         },
                         {
-                            question: "What does 'Brave' mean?",
-                            options: ["Scared", "Courageous", "Weak", "Lazy"],
+                            question: "They _____ playing football when it started raining.",
+                            options: ["are", "were", "was", "is"],
                             correct: 1,
-                            explanation: "Brave means showing courage and fearlessness."
+                            explanation: "Use 'were' for past continuous tense with plural subjects."
                         },
                         {
-                            question: "Choose the opposite of 'Hot':",
-                            options: ["Warm", "Cool", "Cold", "Boiling"],
+                            question: "By next year, I _____ my degree.",
+                            options: ["will complete", "will have completed", "complete", "completed"],
+                            correct: 1,
+                            explanation: "Use future perfect 'will have completed' for actions that will be finished by a specific future time."
+                        },
+                        {
+                            question: "He _____ his homework before dinner yesterday.",
+                            options: ["finished", "had finished", "finishes", "will finish"],
+                            correct: 1,
+                            explanation: "Use past perfect 'had finished' for an action completed before another past action."
+                        },
+                        {
+                            question: "We _____ here for three hours.",
+                            options: ["wait", "are waiting", "have been waiting", "waited"],
                             correct: 2,
-                            explanation: "Cold is the opposite of hot, meaning having a low temperature."
-                        },
-                        {
-                            question: "What does 'Smart' mean?",
-                            options: ["Foolish", "Intelligent", "Slow", "Careless"],
-                            correct: 1,
-                            explanation: "Smart means having intelligence and good judgment."
-                        },
-                        {
-                            question: "Choose the synonym of 'Big':",
-                            options: ["Small", "Tiny", "Large", "Little"],
-                            correct: 2,
-                            explanation: "Large means great in size, similar to big."
-                        },
-                        {
-                            question: "What does 'Clean' mean?",
-                            options: ["Dirty", "Messy", "Pure", "Broken"],
-                            correct: 2,
-                            explanation: "Clean means free from dirt, marks, or stains; pure."
-                        },
-                        {
-                            question: "Choose the opposite of 'Fast':",
-                            options: ["Quick", "Rapid", "Slow", "Swift"],
-                            correct: 2,
-                            explanation: "Slow means moving at a low speed, opposite of fast."
-                        },
-                        {
-                            question: "What does 'Kind' mean?",
-                            options: ["Mean", "Gentle", "Rude", "Harsh"],
-                            correct: 1,
-                            explanation: "Kind means having a friendly, generous nature; gentle."
-                        },
-                        {
-                            question: "Choose the synonym of 'Beautiful':",
-                            options: ["Ugly", "Pretty", "Plain", "Awful"],
-                            correct: 1,
-                            explanation: "Pretty means attractive or beautiful in appearance."
-                        },
-                        {
-                            question: "What does 'Strong' mean?",
-                            options: ["Weak", "Powerful", "Fragile", "Soft"],
-                            correct: 1,
-                            explanation: "Strong means having great physical power and force."
+                            explanation: "Use present perfect continuous 'have been waiting' for ongoing actions that started in the past."
                         }
                     ]
                 },
-                test2: {
-                    name: "Test 2 - Intermediate",
-                    icon: "🟡",
+                articles: {
+                    name: "Articles (A, An, The)",
+                    icon: "📝",
                     questions: [
                         {
-                            question: "Choose the synonym of 'Abundant':",
-                            options: ["Scarce", "Plentiful", "Limited", "Insufficient"],
+                            question: "I need _____ umbrella because it's raining.",
+                            options: ["a", "an", "the", "no article"],
                             correct: 1,
-                            explanation: "Abundant means existing in large quantities; plentiful."
+                            explanation: "Use 'an' before words starting with vowel sounds."
                         },
                         {
-                            question: "What does 'Meticulous' mean?",
-                            options: ["Careless", "Careful", "Rushed", "Sloppy"],
-                            correct: 1,
-                            explanation: "Meticulous means showing great attention to detail; very careful."
-                        },
-                        {
-                            question: "Choose the opposite of 'Optimistic':",
-                            options: ["Hopeful", "Positive", "Pessimistic", "Cheerful"],
+                            question: "_____ sun rises in the east.",
+                            options: ["A", "An", "The", "No article"],
                             correct: 2,
-                            explanation: "Pessimistic means tending to see the worst aspect of things."
+                            explanation: "Use 'the' with unique objects like the sun, moon, earth."
                         },
                         {
-                            question: "What does 'Eloquent' mean?",
-                            options: ["Speechless", "Fluent", "Quiet", "Mumbling"],
+                            question: "She is _____ honest person.",
+                            options: ["a", "an", "the", "no article"],
                             correct: 1,
-                            explanation: "Eloquent means fluent and persuasive in speaking or writing."
+                            explanation: "Use 'an' before words starting with vowel sounds (honest starts with 'o' sound)."
                         },
                         {
-                            question: "Choose the synonym of 'Deteriorate':",
-                            options: ["Improve", "Worsen", "Maintain", "Enhance"],
+                            question: "I love playing _____ piano.",
+                            options: ["a", "an", "the", "no article"],
+                            correct: 2,
+                            explanation: "Use 'the' with musical instruments."
+                        },
+                        {
+                            question: "_____ books are expensive these days.",
+                            options: ["A", "An", "The", "No article"],
+                            correct: 3,
+                            explanation: "No article is used when making general statements about plural nouns."
+                        }
+                    ]
+                },
+                prepositions: {
+                    name: "Prepositions",
+                    icon: "🔗",
+                    questions: [
+                        {
+                            question: "The cat is hiding _____ the table.",
+                            options: ["in", "on", "under", "at"],
+                            correct: 2,
+                            explanation: "Use 'under' to indicate position below something."
+                        },
+                        {
+                            question: "We arrived _____ the airport at 6 PM.",
+                            options: ["in", "on", "at", "to"],
+                            correct: 2,
+                            explanation: "Use 'at' with specific locations and buildings."
+                        },
+                        {
+                            question: "She was born _____ May 15th.",
+                            options: ["in", "on", "at", "during"],
                             correct: 1,
-                            explanation: "Deteriorate means to become progressively worse; to worsen."
+                            explanation: "Use 'on' with specific dates."
                         },
                         {
-                            question: "What does 'Pragmatic' mean?",
-                            options: ["Idealistic", "Practical", "Theoretical", "Unrealistic"],
-                            correct: 1,
-                            explanation: "Pragmatic means dealing with things in a practical way."
-                        },
-                        {
-                            question: "Choose the opposite of 'Ambiguous':",
-                            options: ["Clear", "Confusing", "Vague", "Uncertain"],
+                            question: "I'll see you _____ the morning.",
+                            options: ["in", "on", "at", "during"],
                             correct: 0,
-                            explanation: "Clear is the opposite of ambiguous, meaning easy to understand."
+                            explanation: "Use 'in' with parts of the day (morning, afternoon, evening)."
                         },
                         {
-                            question: "What does 'Versatile' mean?",
-                            options: ["Limited", "Adaptable", "Rigid", "Specialized"],
+                            question: "The picture is hanging _____ the wall.",
+                            options: ["in", "on", "at", "over"],
                             correct: 1,
-                            explanation: "Versatile means able to adapt or be adapted to many functions."
-                        },
-                        {
-                            question: "Choose the synonym of 'Tenacious':",
-                            options: ["Weak", "Persistent", "Giving up", "Lazy"],
-                            correct: 1,
-                            explanation: "Tenacious means tending to keep a firm hold; persistent."
-                        },
-                        {
-                            question: "What does 'Candid' mean?",
-                            options: ["Dishonest", "Honest", "Secretive", "Deceptive"],
-                            correct: 1,
-                            explanation: "Candid means truthful and straightforward; frank and honest."
+                            explanation: "Use 'on' when something is attached to or touching a surface."
                         }
                     ]
                 },
-                test3: {
-                    name: "Test 3 - Advanced",
-                    icon: "🔴",
+                subjectVerb: {
+                    name: "Subject-Verb Agreement",
+                    icon: "🤝",
                     questions: [
                         {
-                            question: "Choose the synonym of 'Ubiquitous':",
-                            options: ["Rare", "Omnipresent", "Absent", "Limited"],
-                            correct: 1,
-                            explanation: "Ubiquitous means present, appearing, or found everywhere."
-                        },
-                        {
-                            question: "What does 'Perspicacious' mean?",
-                            options: ["Confused", "Insightful", "Ignorant", "Blind"],
-                            correct: 1,
-                            explanation: "Perspicacious means having keen insight; mentally sharp."
-                        },
-                        {
-                            question: "Choose the opposite of 'Magnanimous':",
-                            options: ["Generous", "Noble", "Petty", "Forgiving"],
-                            correct: 2,
-                            explanation: "Petty is opposite to magnanimous, which means generous and noble."
-                        },
-                        {
-                            question: "What does 'Ephemeral' mean?",
-                            options: ["Permanent", "Temporary", "Eternal", "Lasting"],
-                            correct: 1,
-                            explanation: "Ephemeral means lasting for a very short time; temporary."
-                        },
-                        {
-                            question: "Choose the synonym of 'Surreptitious':",
-                            options: ["Open", "Secret", "Public", "Obvious"],
-                            correct: 1,
-                            explanation: "Surreptitious means kept secret, especially because it would not be approved."
-                        },
-                        {
-                            question: "What does 'Vacillate' mean?",
-                            options: ["Decide firmly", "Waver", "Stand still", "Move forward"],
-                            correct: 1,
-                            explanation: "Vacillate means to waver between different opinions or actions."
-                        },
-                        {
-                            question: "Choose the opposite of 'Truculent':",
-                            options: ["Peaceful", "Aggressive", "Hostile", "Defiant"],
+                            question: "The group of students _____ studying hard.",
+                            options: ["is", "are", "was", "were"],
                             correct: 0,
-                            explanation: "Peaceful is opposite to truculent, which means aggressively defiant."
+                            explanation: "The subject 'group' is singular, so use 'is'."
                         },
                         {
-                            question: "What does 'Sagacious' mean?",
-                            options: ["Foolish", "Wise", "Ignorant", "Confused"],
+                            question: "Neither the teacher nor the students _____ satisfied.",
+                            options: ["is", "are", "was", "were"],
                             correct: 1,
-                            explanation: "Sagacious means having or showing keen mental discernment; wise."
+                            explanation: "With 'neither...nor', the verb agrees with the subject closest to it (students = plural)."
                         },
                         {
-                            question: "Choose the synonym of 'Pusillanimous':",
-                            options: ["Brave", "Cowardly", "Bold", "Fearless"],
-                            correct: 1,
-                            explanation: "Pusillanimous means showing a lack of courage; cowardly."
+                            question: "Mathematics _____ my favorite subject.",
+                            options: ["is", "are", "was", "were"],
+                            correct: 0,
+                            explanation: "Subject names ending in -s like 'mathematics' are singular."
                         },
                         {
-                            question: "What does 'Quixotic' mean?",
-                            options: ["Realistic", "Idealistic", "Practical", "Sensible"],
+                            question: "The news _____ very disturbing today.",
+                            options: ["is", "are", "was", "were"],
+                            correct: 0,
+                            explanation: "'News' is always singular despite ending in -s."
+                        },
+                        {
+                            question: "Each of the boys _____ a bicycle.",
+                            options: ["have", "has", "had", "having"],
                             correct: 1,
-                            explanation: "Quixotic means extremely idealistic and unrealistic."
+                            explanation: "'Each' is always singular, so use 'has'."
                         }
                     ]
+                },
+                wordPower: {
+                    name: "Word Power Tests",
+                    icon: "🔤",
+                    hasSubCategories: true,
+                    subCategories: {
+                        test1: {
+                            name: "Test 1 - Beginner",
+                            icon: "🟢",
+                            questions: [
+                                {
+                                    question: "Choose the synonym of 'Happy':",
+                                    options: ["Sad", "Joyful", "Angry", "Tired"],
+                                    correct: 1,
+                                    explanation: "Joyful means feeling great pleasure and happiness."
+                                },
+                                {
+                                    question: "What does 'Brave' mean?",
+                                    options: ["Scared", "Courageous", "Weak", "Lazy"],
+                                    correct: 1,
+                                    explanation: "Brave means showing courage and fearlessness."
+                                },
+                                {
+                                    question: "Choose the opposite of 'Hot':",
+                                    options: ["Warm", "Cool", "Cold", "Boiling"],
+                                    correct: 2,
+                                    explanation: "Cold is the opposite of hot, meaning having a low temperature."
+                                },
+                                {
+                                    question: "What does 'Smart' mean?",
+                                    options: ["Foolish", "Intelligent", "Slow", "Careless"],
+                                    correct: 1,
+                                    explanation: "Smart means having intelligence and good judgment."
+                                },
+                                {
+                                    question: "Choose the synonym of 'Big':",
+                                    options: ["Small", "Tiny", "Large", "Little"],
+                                    correct: 2,
+                                    explanation: "Large means great in size, similar to big."
+                                },
+                                {
+                                    question: "What does 'Clean' mean?",
+                                    options: ["Dirty", "Messy", "Pure", "Broken"],
+                                    correct: 2,
+                                    explanation: "Clean means free from dirt, marks, or stains; pure."
+                                },
+                                {
+                                    question: "Choose the opposite of 'Fast':",
+                                    options: ["Quick", "Rapid", "Slow", "Swift"],
+                                    correct: 2,
+                                    explanation: "Slow means moving at a low speed, opposite of fast."
+                                },
+                                {
+                                    question: "What does 'Kind' mean?",
+                                    options: ["Mean", "Gentle", "Rude", "Harsh"],
+                                    correct: 1,
+                                    explanation: "Kind means having a friendly, generous nature; gentle."
+                                },
+                                {
+                                    question: "Choose the synonym of 'Beautiful':",
+                                    options: ["Ugly", "Pretty", "Plain", "Awful"],
+                                    correct: 1,
+                                    explanation: "Pretty means attractive or beautiful in appearance."
+                                },
+                                {
+                                    question: "What does 'Strong' mean?",
+                                    options: ["Weak", "Powerful", "Fragile", "Soft"],
+                                    correct: 1,
+                                    explanation: "Strong means having great physical power and force."
+                                }
+                            ]
+                        },
+                        test2: {
+                            name: "Test 2 - Intermediate",
+                            icon: "🟡",
+                            questions: [
+                                {
+                                    question: "Choose the synonym of 'Abundant':",
+                                    options: ["Scarce", "Plentiful", "Limited", "Insufficient"],
+                                    correct: 1,
+                                    explanation: "Abundant means existing in large quantities; plentiful."
+                                },
+                                {
+                                    question: "What does 'Meticulous' mean?",
+                                    options: ["Careless", "Careful", "Rushed", "Sloppy"],
+                                    correct: 1,
+                                    explanation: "Meticulous means showing great attention to detail; very careful."
+                                },
+                                {
+                                    question: "Choose the opposite of 'Optimistic':",
+                                    options: ["Hopeful", "Positive", "Pessimistic", "Cheerful"],
+                                    correct: 2,
+                                    explanation: "Pessimistic means tending to see the worst aspect of things."
+                                },
+                                {
+                                    question: "What does 'Eloquent' mean?",
+                                    options: ["Speechless", "Fluent", "Quiet", "Mumbling"],
+                                    correct: 1,
+                                    explanation: "Eloquent means fluent and persuasive in speaking or writing."
+                                },
+                                {
+                                    question: "Choose the synonym of 'Deteriorate':",
+                                    options: ["Improve", "Worsen", "Maintain", "Enhance"],
+                                    correct: 1,
+                                    explanation: "Deteriorate means to become progressively worse; to worsen."
+                                },
+                                {
+                                    question: "What does 'Pragmatic' mean?",
+                                    options: ["Idealistic", "Practical", "Theoretical", "Unrealistic"],
+                                    correct: 1,
+                                    explanation: "Pragmatic means dealing with things in a practical way."
+                                },
+                                {
+                                    question: "Choose the opposite of 'Ambiguous':",
+                                    options: ["Clear", "Confusing", "Vague", "Uncertain"],
+                                    correct: 0,
+                                    explanation: "Clear is the opposite of ambiguous, meaning easy to understand."
+                                },
+                                {
+                                    question: "What does 'Versatile' mean?",
+                                    options: ["Limited", "Adaptable", "Rigid", "Specialized"],
+                                    correct: 1,
+                                    explanation: "Versatile means able to adapt or be adapted to many functions."
+                                },
+                                {
+                                    question: "Choose the synonym of 'Tenacious':",
+                                    options: ["Weak", "Persistent", "Giving up", "Lazy"],
+                                    correct: 1,
+                                    explanation: "Tenacious means tending to keep a firm hold; persistent."
+                                },
+                                {
+                                    question: "What does 'Candid' mean?",
+                                    options: ["Dishonest", "Honest", "Secretive", "Deceptive"],
+                                    correct: 1,
+                                    explanation: "Candid means truthful and straightforward; frank and honest."
+                                }
+                            ]
+                        },
+                        test3: {
+                            name: "Test 3 - Advanced",
+                            icon: "🔴",
+                            questions: [
+                                {
+                                    question: "Choose the synonym of 'Ubiquitous':",
+                                    options: ["Rare", "Omnipresent", "Absent", "Limited"],
+                                    correct: 1,
+                                    explanation: "Ubiquitous means present, appearing, or found everywhere."
+                                },
+                                {
+                                    question: "What does 'Perspicacious' mean?",
+                                    options: ["Confused", "Insightful", "Ignorant", "Blind"],
+                                    correct: 1,
+                                    explanation: "Perspicacious means having keen insight; mentally sharp."
+                                },
+                                {
+                                    question: "Choose the opposite of 'Magnanimous':",
+                                    options: ["Generous", "Noble", "Petty", "Forgiving"],
+                                    correct: 2,
+                                    explanation: "Petty is opposite to magnanimous, which means generous and noble."
+                                },
+                                {
+                                    question: "What does 'Ephemeral' mean?",
+                                    options: ["Permanent", "Temporary", "Eternal", "Lasting"],
+                                    correct: 1,
+                                    explanation: "Ephemeral means lasting for a very short time; temporary."
+                                },
+                                {
+                                    question: "Choose the synonym of 'Surreptitious':",
+                                    options: ["Open", "Secret", "Public", "Obvious"],
+                                    correct: 1,
+                                    explanation: "Surreptitious means kept secret, especially because it would not be approved."
+                                },
+                                {
+                                    question: "What does 'Vacillate' mean?",
+                                    options: ["Decide firmly", "Waver", "Stand still", "Move forward"],
+                                    correct: 1,
+                                    explanation: "Vacillate means to waver between different opinions or actions."
+                                },
+                                {
+                                    question: "Choose the opposite of 'Truculent':",
+                                    options: ["Peaceful", "Aggressive", "Hostile", "Defiant"],
+                                    correct: 0,
+                                    explanation: "Peaceful is opposite to truculent, which means aggressively defiant."
+                                },
+                                {
+                                    question: "What does 'Sagacious' mean?",
+                                    options: ["Foolish", "Wise", "Ignorant", "Confused"],
+                                    correct: 1,
+                                    explanation: "Sagacious means having or showing keen mental discernment; wise."
+                                },
+                                {
+                                    question: "Choose the synonym of 'Pusillanimous':",
+                                    options: ["Brave", "Cowardly", "Bold", "Fearless"],
+                                    correct: 1,
+                                    explanation: "Pusillanimous means showing a lack of courage; cowardly."
+                                },
+                                {
+                                    question: "What does 'Quixotic' mean?",
+                                    options: ["Realistic", "Idealistic", "Practical", "Sensible"],
+                                    correct: 1,
+                                    explanation: "Quixotic means extremely idealistic and unrealistic."
+                                }
+                            ]
+                        }
+                    }
                 }
-            }
-        }
-    };
+            };
 
-    const currentQuestions = currentSubCategory 
-        ? quizCategories[currentCategory]?.subCategories?.[currentSubCategory]?.questions || []
-        : currentCategory && !quizCategories[currentCategory]?.hasSubCategories
-        ? quizCategories[currentCategory]?.questions || []
-        : [];
-    const currentQuestion = currentQuestions[currentQuestionIndex];
+            const currentQuestions = currentSubCategory 
+                ? quizCategories[currentCategory]?.subCategories?.[currentSubCategory]?.questions || []
+                : currentCategory && !quizCategories[currentCategory]?.hasSubCategories
+                ? quizCategories[currentCategory]?.questions || []
+                : [];
+            const currentQuestion = currentQuestions[currentQuestionIndex];
 
-    const handleCategorySelect = (categoryKey) => {
-        const category = quizCategories[categoryKey];
-        if (category.hasSubCategories) {
-            setCurrentCategory(categoryKey);
-            setCurrentSubCategory(null);
-        } else {
-            setCurrentCategory(categoryKey);
-            setCurrentSubCategory(null);
-            setCurrentQuestionIndex(0);
-            setSelectedAnswer(null);
-            setShowResult(false);
-            setScore(0);
-            setQuizCompleted(false);
-            setAnsweredQuestions([]);
-        }
-    };
+            const handleCategorySelect = (categoryKey) => {
+                const category = quizCategories[categoryKey];
+                if (category.hasSubCategories) {
+                    setCurrentCategory(categoryKey);
+                    setCurrentSubCategory(null);
+                } else {
+                    setCurrentCategory(categoryKey);
+                    setCurrentSubCategory(null);
+                    setCurrentQuestionIndex(0);
+                    setSelectedAnswer(null);
+                    setShowResult(false);
+                    setScore(0);
+                    setQuizCompleted(false);
+                    setAnsweredQuestions([]);
+                }
+            };
 
-    const handleSubCategorySelect = (subCategoryKey) => {
-        setCurrentSubCategory(subCategoryKey);
-        setCurrentQuestionIndex(0);
-        setSelectedAnswer(null);
-        setShowResult(false);
-        setScore(0);
-        setQuizCompleted(false);
-        setAnsweredQuestions([]);
-    };
+            const handleSubCategorySelect = (subCategoryKey) => {
+                setCurrentSubCategory(subCategoryKey);
+                setCurrentQuestionIndex(0);
+                setSelectedAnswer(null);
+                setShowResult(false);
+                setScore(0);
+                setQuizCompleted(false);
+                setAnsweredQuestions([]);
+            };
 
-    const handleAnswerSelect = (answerIndex) => {
-        if (showResult) return;
-        setSelectedAnswer(answerIndex);
-        setShowResult(true);
-        
-        const isCorrect = answerIndex === currentQuestion.correct;
-        if (isCorrect) {
-            setScore(score + 1);
-        }
-        
-        setAnsweredQuestions([...answeredQuestions, {
-            question: currentQuestion.question,
-            selectedAnswer: answerIndex,
-            correctAnswer: currentQuestion.correct,
-            isCorrect: isCorrect,
-            explanation: currentQuestion.explanation
-        }]);
-    };
+            const handleAnswerSelect = (answerIndex) => {
+                if (showResult) return;
+                setSelectedAnswer(answerIndex);
+                setShowResult(true);
+                
+                const isCorrect = answerIndex === currentQuestion.correct;
+                if (isCorrect) {
+                    setScore(score + 1);
+                }
+                
+                setAnsweredQuestions([...answeredQuestions, {
+                    question: currentQuestion.question,
+                    selectedAnswer: answerIndex,
+                    correctAnswer: currentQuestion.correct,
+                    isCorrect: isCorrect,
+                    explanation: currentQuestion.explanation
+                }]);
+            };
 
-    const handleNextQuestion = () => {
-        if (currentQuestionIndex < currentQuestions.length - 1) {
-            setCurrentQuestionIndex(currentQuestionIndex + 1);
-            setSelectedAnswer(null);
-            setShowResult(false);
-        } else {
-            setQuizCompleted(true);
-        }
-    };
+            const handleNextQuestion = () => {
+                if (currentQuestionIndex < currentQuestions.length - 1) {
+                    setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    setSelectedAnswer(null);
+                    setShowResult(false);
+                } else {
+                    setQuizCompleted(true);
+                }
+            };
 
-    const resetQuiz = () => {
-        setCurrentCategory(null);
-        setCurrentSubCategory(null);
-        setCurrentQuestionIndex(0);
-        setSelectedAnswer(null);
-        setShowResult(false);
-        setScore(0);
-        setQuizCompleted(false);
-        setAnsweredQuestions([]);
-    };
+            const resetQuiz = () => {
+                setCurrentCategory(null);
+                setCurrentSubCategory(null);
+                setCurrentQuestionIndex(0);
+                setSelectedAnswer(null);
+                setShowResult(false);
+                setScore(0);
+                setQuizCompleted(false);
+                setAnsweredQuestions([]);
+            };
 
-    const getScoreColor = (score, total) => {
-        const percentage = (score / total) * 100;
-        if (percentage >= 80) return 'text-green-600';
-        if (percentage >= 60) return 'text-yellow-600';
-        return 'text-red-600';
-    };
+            const getScoreColor = (score, total) => {
+                const percentage = (score / total) * 100;
+                if (percentage >= 80) return 'text-green-600';
+                if (percentage >= 60) return 'text-yellow-600';
+                return 'text-red-600';
+            };
 
-    if (!currentCategory) {
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-                <div className="max-w-4xl mx-auto">
-                    <div className="text-center mb-8">
-                        <h1 className="text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center gap-3">
-                            <BookOpen className="text-blue-600" size={40} />
-                            English Grammar Quiz
-                        </h1>
-                        <p className="text-lg text-gray-600">Choose a category to test your grammar knowledge!</p>
+            if (!currentCategory) {
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+                        <div className="max-w-4xl mx-auto">
+                            <div className="text-center mb-8">
+                                <h1 className="text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center gap-3">
+                                    <BookOpen className="text-blue-600" size={40} />
+                                    English Grammar Quiz
+                                </h1>
+                                <p className="text-lg text-gray-600">Choose a category to test your grammar knowledge!</p>
+                            </div>
+                            
+                            <div className="grid md:grid-cols-2 gap-6">
+                                {Object.entries(quizCategories).map(([key, category]) => (
+                                    <div
+                                        key={key}
+                                        onClick={() => handleCategorySelect(key)}
+                                        className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 p-8 border-2 border-transparent hover:border-blue-200"
+                                    >
+                                        <div className="text-center">
+                                            <div className="text-4xl mb-4">{category.icon}</div>
+                                            <h3 className="text-xl font-semibold text-gray-800 mb-2">{category.name}</h3>
+                                            <p className="text-gray-600">
+                                                {category.hasSubCategories 
+                                                    ? `${Object.keys(category.subCategories).length} tests available`
+                                                    : `${category.questions.length} questions`
+                                                }
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div className="grid md:grid-cols-2 gap-6">
-                        {Object.entries(quizCategories).map(([key, category]) => (
-                            <div
-                                key={key}
-                                onClick={() => handleCategorySelect(key)}
-                                className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 p-8 border-2 border-transparent hover:border-blue-200"
-                            >
-                                <div className="text-center">
-                                    <div className="text-4xl mb-4">{category.icon}</div>
-                                    <h3 className="text-xl font-semibold text-gray-800 mb-2">{category.name}</h3>
-                                    <p className="text-gray-600">
-                                        {category.hasSubCategories 
-                                            ? `${Object.keys(category.subCategories).length} tests available`
-                                            : `${category.questions.length} questions`
-                                        }
-                                    </p>
+                );
+            }
+
+            // Show sub-category selection for categories that have sub-categories
+            if (currentCategory && quizCategories[currentCategory]?.hasSubCategories && !currentSubCategory) {
+                const category = quizCategories[currentCategory];
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+                        <div className="max-w-4xl mx-auto">
+                            <div className="mb-6 flex items-center gap-4">
+                                <button
+                                    onClick={resetQuiz}
+                                    className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors flex items-center gap-2"
+                                >
+                                    ← Back to Categories
+                                </button>
+                                <h2 className="text-2xl font-bold text-gray-800">{category.name}</h2>
+                            </div>
+                            
+                            <div className="text-center mb-8">
+                                <div className="text-6xl mb-4">{category.icon}</div>
+                                <h1 className="text-3xl font-bold text-gray-800 mb-4">{category.name}</h1>
+                                <p className="text-lg text-gray-600">Choose a test to begin!</p>
+                            </div>
+                            
+                            <div className="grid md:grid-cols-3 gap-6">
+                                {Object.entries(category.subCategories).map(([subKey, subCategory]) => (
+                                    <div
+                                        key={subKey}
+                                        onClick={() => handleSubCategorySelect(subKey)}
+                                        className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 p-8 border-2 border-transparent hover:border-blue-200"
+                                    >
+                                        <div className="text-center">
+                                            <div className="text-4xl mb-4">{subCategory.icon}</div>
+                                            <h3 className="text-xl font-semibold text-gray-800 mb-2">{subCategory.name}</h3>
+                                            <p className="text-gray-600">{subCategory.questions.length} questions</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (quizCompleted) {
+                const percentage = Math.round((score / currentQuestions.length) * 100);
+                
+                return (
+                    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+                        <div className="max-w-3xl mx-auto">
+                            <div className="bg-white rounded-xl shadow-lg p-8">
+                                <div className="text-center mb-8">
+                                    <Trophy className="mx-auto text-yellow-500 mb-4" size={64} />
+                                    <h2 className="text-3xl font-bold text-gray-800 mb-2">Quiz Completed!</h2>
+                                    <div className={`text-5xl font-bold mb-4 ${getScoreColor(score, currentQuestions.length)}`}>
+                                        {score}/{currentQuestions.length}
+                                    </div>
+                                    <p className="text-xl text-gray-600">You scored {percentage}%</p>
+                                </div>
+
+                                <div className="mb-8">
+                                    <h3 className="text-xl font-semibold mb-4 text-gray-800">Review Your Answers:</h3>
+                                    <div className="space-y-4">
+                                        {answeredQuestions.map((answer, index) => (
+                                            <div key={index} className="border rounded-lg p-4 bg-gray-50">
+                                                <div className="flex items-start gap-3 mb-2">
+                                                    {answer.isCorrect ? (
+                                                        <CheckCircle className="text-green-500 flex-shrink-0 mt-0.5" size={20} />
+                                                    ) : (
+                                                        <XCircle className="text-red-500 flex-shrink-0 mt-0.5" size={20} />
+                                                    )}
+                                                    <div className="flex-1">
+                                                        <p className="font-medium text-gray-800 mb-1">Q{index + 1}: {answer.question}</p>
+                                                        <p className="text-sm text-gray-600">{answer.explanation}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4 justify-center">
+                                    <button
+                                        onClick={() => {
+                                            if (currentSubCategory) {
+                                                handleSubCategorySelect(currentSubCategory);
+                                            } else {
+                                                handleCategorySelect(currentCategory);
+                                            }
+                                        }}
+                                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                                    >
+                                        <RotateCcw size={20} />
+                                        Retry Quiz
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            if (currentSubCategory) {
+                                                setCurrentSubCategory(null);
+                                                setCurrentQuestionIndex(0);
+                                                setSelectedAnswer(null);
+                                                setShowResult(false);
+                                                setScore(0);
+                                                setQuizCompleted(false);
+                                                setAnsweredQuestions([]);
+                                            } else {
+                                                resetQuiz();
+                                            }
+                                        }}
+                                        className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                                    >
+                                        Back to {currentSubCategory ? 'Tests' : 'Categories'}
+                                    </button>
                                 </div>
                             </div>
-                        ))}
+                        </div>
                     </div>
-                </div>
-            </div>
-        );
-    }
+                );
+            }
 
-    // Show sub-category selection for categories that have sub-categories
-    if (currentCategory && quizCategories[currentCategory]?.hasSubCategories && !currentSubCategory) {
-        const category = quizCategories[currentCategory];
-        return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-                <div className="max-w-4xl mx-auto">
-                    <div className="mb-6 flex items-center gap-4">
-                        <button
-                            onClick={resetQuiz}
-                            className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-                        >
-                            ← Back to {currentSubCategory ? 'Tests' : 'Categories'}
-                        </button>
-                        
-                        {showResult && (
-                            <button
-                                onClick={handleNextQuestion}
-                                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                            >
-                                {currentQuestionIndex < currentQuestions.length - 1 ? 'Next Question' : 'View Results'}
-                            </button>
-                        )}
-                    </div>
-                </div>
+            return (
+                <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+                    <div className="max-w-3xl mx-auto">
+                        <div className="mb-6 flex justify-between items-center">
+                            <h2 className="text-2xl font-bold text-gray-800">
+                                {currentSubCategory 
+                                    ? quizCategories[currentCategory].subCategories[currentSubCategory].name
+                                    : quizCategories[currentCategory].name
+                                }
+                            </h2>
+                            <div className="text-lg font-semibold text-gray-600">
+                                Question {currentQuestionIndex + 1} of {currentQuestions.length}
+                            </div>
+                        </div>
 
-                <div className="text-center">
-                    <div className="text-lg font-semibold text-gray-700">
-                        Score: {score}/{currentQuestions.length}
+                        <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+                            <div className="mb-6">
+                                <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+                                    <div 
+                                        className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                        style={{ width: `${((currentQuestionIndex + 1) / currentQuestions.length) * 100}%` }}
+                                    ></div>
+                                </div>
+                                <h3 className="text-xl font-semibold text-gray-800 mb-6">
+                                    {currentQuestion.question}
+                                </h3>
+                            </div>
+
+                            <div className="space-y-3 mb-6">
+                                {currentQuestion.options.map((option, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => handleAnswerSelect(index)}
+                                        disabled={showResult}
+                                        className={`w-full p-4 text-left rounded-lg border-2 transition-all duration-300 ${
+                                            showResult
+                                                ? index === currentQuestion.correct
+                                                    ? 'border-green-500 bg-green-50 text-green-800'
+                                                    : selectedAnswer === index
+                                                    ? 'border-red-500 bg-red-50 text-red-800'
+                                                    : 'border-gray-200 bg-gray-50'
+                                                : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
+                                        }`}
+                                    >
+                                        <span className="font-medium">
+                                            {String.fromCharCode(65 + index)}. {option}
+                                        </span>
+                                        {showResult && index === currentQuestion.correct && (
+                                            <CheckCircle className="inline ml-2 text-green-500" size={20} />
+                                        )}
+                                        {showResult && selectedAnswer === index && index !== currentQuestion.correct && (
+                                            <XCircle className="inline ml-2 text-red-500" size={20} />
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {showResult && (
+                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                                    <p className="text-blue-800">
+                                        <strong>Explanation:</strong> {currentQuestion.explanation}
+                                    </p>
+                                </div>
+                            )}
+
+                            <div className="flex justify-between items-center">
+                                <button
+                                    onClick={() => {
+                                        if (currentSubCategory) {
+                                            setCurrentSubCategory(null);
+                                            setCurrentQuestionIndex(0);
+                                            setSelectedAnswer(null);
+                                            setShowResult(false);
+                                            setScore(0);
+                                            setQuizCompleted(false);
+                                            setAnsweredQuestions([]);
+                                        } else {
+                                            resetQuiz();
+                                        }
+                                    }}
+                                    className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                                >
+                                    ← Back to {currentSubCategory ? 'Tests' : 'Categories'}
+                                </button>
+                                
+                                {showResult && (
+                                    <button
+                                        onClick={handleNextQuestion}
+                                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                                    >
+                                        {currentQuestionIndex < currentQuestions.length - 1 ? 'Next Question' : 'View Results'}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="text-center">
+                            <div className="text-lg font-semibold text-gray-700">
+                                Score: {score}/{currentQuestions.length}
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    );
-};
+            );
+        };
 
         ReactDOM.render(<GrammarQuizApp />, document.getElementById('root'));
     </script>
