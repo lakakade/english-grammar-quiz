@@ -418,245 +418,158 @@ const GrammarQuizApp = () => {
         }
     };
 
-            const currentQuestions = currentCategory ? quizCategories[currentCategory].questions : [];
-            const currentQuestion = currentQuestions[currentQuestionIndex];
+    const currentQuestions = currentSubCategory 
+        ? quizCategories[currentCategory]?.subCategories?.[currentSubCategory]?.questions || []
+        : currentCategory && !quizCategories[currentCategory]?.hasSubCategories
+        ? quizCategories[currentCategory]?.questions || []
+        : [];
+    const currentQuestion = currentQuestions[currentQuestionIndex];
 
-            const handleCategorySelect = (categoryKey) => {
-                setCurrentCategory(categoryKey);
-                setCurrentQuestionIndex(0);
-                setSelectedAnswer(null);
-                setShowResult(false);
-                setScore(0);
-                setQuizCompleted(false);
-                setAnsweredQuestions([]);
-            };
+    const handleCategorySelect = (categoryKey) => {
+        const category = quizCategories[categoryKey];
+        if (category.hasSubCategories) {
+            setCurrentCategory(categoryKey);
+            setCurrentSubCategory(null);
+        } else {
+            setCurrentCategory(categoryKey);
+            setCurrentSubCategory(null);
+            setCurrentQuestionIndex(0);
+            setSelectedAnswer(null);
+            setShowResult(false);
+            setScore(0);
+            setQuizCompleted(false);
+            setAnsweredQuestions([]);
+        }
+    };
 
-            const handleAnswerSelect = (answerIndex) => {
-                if (showResult) return;
-                setSelectedAnswer(answerIndex);
-                setShowResult(true);
-                
-                const isCorrect = answerIndex === currentQuestion.correct;
-                if (isCorrect) {
-                    setScore(score + 1);
-                }
-                
-                setAnsweredQuestions([...answeredQuestions, {
-                    question: currentQuestion.question,
-                    selectedAnswer: answerIndex,
-                    correctAnswer: currentQuestion.correct,
-                    isCorrect: isCorrect,
-                    explanation: currentQuestion.explanation
-                }]);
-            };
+    const handleSubCategorySelect = (subCategoryKey) => {
+        setCurrentSubCategory(subCategoryKey);
+        setCurrentQuestionIndex(0);
+        setSelectedAnswer(null);
+        setShowResult(false);
+        setScore(0);
+        setQuizCompleted(false);
+        setAnsweredQuestions([]);
+    };
 
-            const handleNextQuestion = () => {
-                if (currentQuestionIndex < currentQuestions.length - 1) {
-                    setCurrentQuestionIndex(currentQuestionIndex + 1);
-                    setSelectedAnswer(null);
-                    setShowResult(false);
-                } else {
-                    setQuizCompleted(true);
-                }
-            };
+    const handleAnswerSelect = (answerIndex) => {
+        if (showResult) return;
+        setSelectedAnswer(answerIndex);
+        setShowResult(true);
+        
+        const isCorrect = answerIndex === currentQuestion.correct;
+        if (isCorrect) {
+            setScore(score + 1);
+        }
+        
+        setAnsweredQuestions([...answeredQuestions, {
+            question: currentQuestion.question,
+            selectedAnswer: answerIndex,
+            correctAnswer: currentQuestion.correct,
+            isCorrect: isCorrect,
+            explanation: currentQuestion.explanation
+        }]);
+    };
 
-            const resetQuiz = () => {
-                setCurrentCategory(null);
-                setCurrentQuestionIndex(0);
-                setSelectedAnswer(null);
-                setShowResult(false);
-                setScore(0);
-                setQuizCompleted(false);
-                setAnsweredQuestions([]);
-            };
+    const handleNextQuestion = () => {
+        if (currentQuestionIndex < currentQuestions.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
+            setSelectedAnswer(null);
+            setShowResult(false);
+        } else {
+            setQuizCompleted(true);
+        }
+    };
 
-            const getScoreColor = (score, total) => {
-                const percentage = (score / total) * 100;
-                if (percentage >= 80) return 'text-green-600';
-                if (percentage >= 60) return 'text-yellow-600';
-                return 'text-red-600';
-            };
+    const resetQuiz = () => {
+        setCurrentCategory(null);
+        setCurrentSubCategory(null);
+        setCurrentQuestionIndex(0);
+        setSelectedAnswer(null);
+        setShowResult(false);
+        setScore(0);
+        setQuizCompleted(false);
+        setAnsweredQuestions([]);
+    };
 
-            if (!currentCategory) {
-                return (
-                    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-                        <div className="max-w-4xl mx-auto">
-                            <div className="text-center mb-8">
-                                <h1 className="text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center gap-3">
-                                    <BookOpen />
-                                    EnglishWithLK
-                                </h1>
-                                <p className="text-lg text-gray-600">Choose a category to test your grammar knowledge!</p>
-                            </div>
-                            
-                            <div className="grid md:grid-cols-2 gap-6">
-                                {Object.entries(quizCategories).map(([key, category]) => (
-                                    <div
-                                        key={key}
-                                        onClick={() => handleCategorySelect(key)}
-                                        className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 p-8 border-2 border-transparent hover:border-blue-200"
-                                    >
-                                        <div className="text-center">
-                                            <div className="text-4xl mb-4">{category.icon}</div>
-                                            <h3 className="text-xl font-semibold text-gray-800 mb-2">{category.name}</h3>
-                                            <p className="text-gray-600">{category.questions.length} questions</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
+    const getScoreColor = (score, total) => {
+        const percentage = (score / total) * 100;
+        if (percentage >= 80) return 'text-green-600';
+        if (percentage >= 60) return 'text-yellow-600';
+        return 'text-red-600';
+    };
+
+    if (!currentCategory) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+                <div className="max-w-4xl mx-auto">
+                    <div className="text-center mb-8">
+                        <h1 className="text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center gap-3">
+                            <BookOpen className="text-blue-600" size={40} />
+                            English Grammar Quiz
+                        </h1>
+                        <p className="text-lg text-gray-600">Choose a category to test your grammar knowledge!</p>
                     </div>
-                );
-            }
-
-            if (quizCompleted) {
-                const percentage = Math.round((score / currentQuestions.length) * 100);
-                
-                return (
-                    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-                        <div className="max-w-3xl mx-auto">
-                            <div className="bg-white rounded-xl shadow-lg p-8">
-                                <div className="text-center mb-8">
-                                    <Trophy className="mx-auto text-yellow-500 mb-4" />
-                                    <h2 className="text-3xl font-bold text-gray-800 mb-2">Quiz Completed!</h2>
-                                    <div className={`text-5xl font-bold mb-4 ${getScoreColor(score, currentQuestions.length)}`}>
-                                        {score}/{currentQuestions.length}
-                                    </div>
-                                    <p className="text-xl text-gray-600">You scored {percentage}%</p>
-                                </div>
-
-                                <div className="mb-8">
-                                    <h3 className="text-xl font-semibold mb-4 text-gray-800">Review Your Answers:</h3>
-                                    <div className="space-y-4">
-                                        {answeredQuestions.map((answer, index) => (
-                                            <div key={index} className="border rounded-lg p-4 bg-gray-50">
-                                                <div className="flex items-start gap-3 mb-2">
-                                                    {answer.isCorrect ? (
-                                                        <CheckCircle className="text-green-500 flex-shrink-0 mt-0.5" />
-                                                    ) : (
-                                                        <XCircle className="text-red-500 flex-shrink-0 mt-0.5" />
-                                                    )}
-                                                    <div className="flex-1">
-                                                        <p className="font-medium text-gray-800 mb-1">Q{index + 1}: {answer.question}</p>
-                                                        <p className="text-sm text-gray-600">{answer.explanation}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="flex gap-4 justify-center">
-                                    <button
-                                        onClick={() => handleCategorySelect(currentCategory)}
-                                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-                                    >
-                                        <RotateCcw />
-                                        Retry Quiz
-                                    </button>
-                                    <button
-                                        onClick={resetQuiz}
-                                        className="px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-                                    >
-                                        Choose Another Category
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                );
-            }
-
-            return (
-                <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-                    <div className="max-w-3xl mx-auto">
-                        <div className="mb-6 flex justify-between items-center">
-                            <h2 className="text-2xl font-bold text-gray-800">
-                                {quizCategories[currentCategory].name}
-                            </h2>
-                            <div className="text-lg font-semibold text-gray-600">
-                                Question {currentQuestionIndex + 1} of {currentQuestions.length}
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
-                            <div className="mb-6">
-                                <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
-                                    <div 
-                                        className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                                        style={{ width: `${((currentQuestionIndex + 1) / currentQuestions.length) * 100}%` }}
-                                    ></div>
-                                </div>
-                                <h3 className="text-xl font-semibold text-gray-800 mb-6">
-                                    {currentQuestion.question}
-                                </h3>
-                            </div>
-
-                            <div className="space-y-3 mb-6">
-                                {currentQuestion.options.map((option, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => handleAnswerSelect(index)}
-                                        disabled={showResult}
-                                        className={`w-full p-4 text-left rounded-lg border-2 transition-all duration-300 ${
-                                            showResult
-                                                ? index === currentQuestion.correct
-                                                    ? 'border-green-500 bg-green-50 text-green-800'
-                                                    : selectedAnswer === index
-                                                    ? 'border-red-500 bg-red-50 text-red-800'
-                                                    : 'border-gray-200 bg-gray-50'
-                                                : 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
-                                        }`}
-                                    >
-                                        <span className="font-medium">
-                                            {String.fromCharCode(65 + index)}. {option}
-                                        </span>
-                                        {showResult && index === currentQuestion.correct && (
-                                            <CheckCircle className="inline ml-2 text-green-500" />
-                                        )}
-                                        {showResult && selectedAnswer === index && index !== currentQuestion.correct && (
-                                            <XCircle className="inline ml-2 text-red-500" />
-                                        )}
-                                    </button>
-                                ))}
-                            </div>
-
-                            {showResult && (
-                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                                    <p className="text-blue-800">
-                                        <strong>Explanation:</strong> {currentQuestion.explanation}
+                    
+                    <div className="grid md:grid-cols-2 gap-6">
+                        {Object.entries(quizCategories).map(([key, category]) => (
+                            <div
+                                key={key}
+                                onClick={() => handleCategorySelect(key)}
+                                className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 p-8 border-2 border-transparent hover:border-blue-200"
+                            >
+                                <div className="text-center">
+                                    <div className="text-4xl mb-4">{category.icon}</div>
+                                    <h3 className="text-xl font-semibold text-gray-800 mb-2">{category.name}</h3>
+                                    <p className="text-gray-600">
+                                        {category.hasSubCategories 
+                                            ? `${Object.keys(category.subCategories).length} tests available`
+                                            : `${category.questions.length} questions`
+                                        }
                                     </p>
                                 </div>
-                            )}
-
-                            <div className="flex justify-between items-center">
-                                <button
-                                    onClick={resetQuiz}
-                                    className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-                                >
-                                    ← Back to Categories
-                                </button>
-                                
-                                {showResult && (
-                                    <button
-                                        onClick={handleNextQuestion}
-                                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                                    >
-                                        {currentQuestionIndex < currentQuestions.length - 1 ? 'Next Question' : 'View Results'}
-                                    </button>
-                                )}
                             </div>
-                        </div>
-
-                        <div className="text-center">
-                            <div className="text-lg font-semibold text-gray-700">
-                                Score: {score}/{currentQuestions.length}
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
-            );
-        };
+            </div>
+        );
+    }
+
+    // Show sub-category selection for categories that have sub-categories
+    if (currentCategory && quizCategories[currentCategory]?.hasSubCategories && !currentSubCategory) {
+        const category = quizCategories[currentCategory];
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+                <div className="max-w-4xl mx-auto">
+                    <div className="mb-6 flex items-center gap-4">
+                        <button
+                            onClick={resetQuiz}
+                            className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                        >
+                            ← Back to {currentSubCategory ? 'Tests' : 'Categories'}
+                        </button>
+                        
+                        {showResult && (
+                            <button
+                                onClick={handleNextQuestion}
+                                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                            >
+                                {currentQuestionIndex < currentQuestions.length - 1 ? 'Next Question' : 'View Results'}
+                            </button>
+                        )}
+                    </div>
+                </div>
+
+                <div className="text-center">
+                    <div className="text-lg font-semibold text-gray-700">
+                        Score: {score}/{currentQuestions.length}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
 
         ReactDOM.render(<GrammarQuizApp />, document.getElementById('root'));
     </script>
