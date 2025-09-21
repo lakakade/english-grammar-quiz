@@ -209,7 +209,73 @@
                             explanation: "'Each' is always singular, so use 'has'."
                         }
                     ]
-                }
+                },
+                oneWordSubstitution: {
+    name: "One Word Substitution",
+    icon: "🔤",
+    questions: [
+        {
+            question: "A person who loves books and reading:",
+            options: ["Bibliophile", "Bibliographer", "Biography", "Library"],
+            correct: 0,
+            explanation: "A bibliophile is someone who loves and collects books."
+        },
+        {
+            question: "The study of birds:",
+            options: ["Ornithology", "Entomology", "Zoology", "Biology"],
+            correct: 0,
+            explanation: "Ornithology is the scientific study of birds."
+        },
+        {
+            question: "A person who hates mankind:",
+            options: ["Philanthropist", "Misanthrope", "Optimist", "Pessimist"],
+            correct: 1,
+            explanation: "A misanthrope is someone who dislikes humankind and avoids human society."
+        },
+        {
+            question: "The killing of one's own father:",
+            options: ["Matricide", "Suicide", "Patricide", "Homicide"],
+            correct: 2,
+            explanation: "Patricide is the act of killing one's father."
+        },
+        {
+            question: "A government by the people:",
+            options: ["Autocracy", "Democracy", "Monarchy", "Oligarchy"],
+            correct: 1,
+            explanation: "Democracy is a system of government where citizens exercise power by voting."
+        },
+        {
+            question: "Fear of heights:",
+            options: ["Claustrophobia", "Arachnophobia", "Acrophobia", "Agoraphobia"],
+            correct: 2,
+            explanation: "Acrophobia is an extreme or irrational fear of heights."
+        },
+        {
+            question: "A person who can speak two languages:",
+            options: ["Monolingual", "Bilingual", "Multilingual", "Polyglot"],
+            correct: 1,
+            explanation: "A bilingual person can speak two languages fluently."
+        },
+        {
+            question: "The scientific study of earthquakes:",
+            options: ["Geology", "Seismology", "Geography", "Meteorology"],
+            correct: 1,
+            explanation: "Seismology is the scientific study of earthquakes and seismic waves."
+        },
+        {
+            question: "A place where bees are kept:",
+            options: ["Aviary", "Apiary", "Aquarium", "Terrarium"],
+            correct: 1,
+            explanation: "An apiary is a location where beehives are kept."
+        },
+        {
+            question: "The practice of eating human flesh:",
+            options: ["Vegetarianism", "Cannibalism", "Carnivorous", "Omnivorous"],
+            correct: 1,
+            explanation: "Cannibalism is the practice of humans eating the flesh of other humans."
+        }
+    ]
+}
             };
 
             const currentQuestions = currentCategory ? quizCategories[currentCategory].questions : [];
